@@ -14,6 +14,7 @@ import {
   TestRun,
   Location,
   Position,
+  MarkdownString,
 } from "vscode";
 import {basename, join, relative} from "path";
 import {DEBUG_TEST_COMMAND, RUN_TEST_COMMAND} from "../common/Constants";
@@ -274,6 +275,24 @@ export const registerTestResults = (
     return results;
   };
 
+  const formatMessage = (failureMessage: string): string | MarkdownString => {
+    // at function_name (file:///home/user/path/to/file.ts:740:24)
+    const re = /(at [^()]+) \((file:\/\/[^:]+):([0-9]+):([0-9]+)\)/gm;
+    const matches = failureMessage.match(re);
+    if (matches) {
+      const md = new MarkdownString();
+      md.supportHtml = true;
+      return md.appendMarkdown(failureMessage
+        .replace(/[\u00A0-\u9999<>\&]/g, i => '&#' + i.charCodeAt(0) + ';')
+        .replace(/\n/gm, '<br/>\n')
+        .replace(re, (match, func, file, line, character) => {
+          return `${func} ([${file}:${line}:${character}](${file}#L${line}:${character}))`;
+        })
+      );
+    }
+    return failureMessage;
+  };
+
   if (testController) {
       const errorTotal = parseInt(errors, 10) + parseInt(failures, 10);
       let totalTime = 0;
@@ -297,7 +316,7 @@ export const registerTestResults = (
               failedItems.push(caseItem.id);
               const location = determineLocation(failureMessage, fileName);
               const diff = determineDiff(failureMessage) || {};
-              testRun.failed(caseItem, {message: failureMessage, location, ...diff}, parseFloat(time));
+              testRun.failed(caseItem, {message: formatMessage(failureMessage), location, ...diff}, parseFloat(time));
             } else {
               if (!failedItems.includes(caseItem.id)) {
                 testRun.passed(caseItem, parseFloat(time));
