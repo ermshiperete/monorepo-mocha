@@ -97,11 +97,11 @@ export const executeTest = async  (request: TestRunRequest, token: CancellationT
     const [tag] = item.tags;
     const runMode = getTestRunMode(tag);
     const testRun = startTestRun(testController, runMode, item, request);
-    
+
     if (item.uri) {
       const rootPath = getRootPath(item.uri);
       const fileName = item.uri.fsPath;
-      
+
       return commands.executeCommand(command,
         rootPath, fileName, testName, runMode, testRun, item,
       ) as Promise<void>;
@@ -125,7 +125,7 @@ export const discoverTests = async (testController: TestController) => {
         const fileName = file.fsPath;
         const label = basename(fileName);
         const id = createItemId(fileName);
-        
+
         const item = testController.createTestItem(id, label, file);
         if (item) {
           item.tags = [new TestTag(TEST_SUITE)];
@@ -173,14 +173,14 @@ export const initTestController = (): TestController => {
 	};
 
 	testController.createRunProfile(
-		'Run Mocha Tests', 
-		TestRunProfileKind.Run, 
+		'Run Mocha Tests',
+		TestRunProfileKind.Run,
 		async (request, token) => executeTest(request, token, RUN_TEST_COMMAND),
 	);
 
   testController.createRunProfile(
-		'Debug Mocha Tests', 
-		TestRunProfileKind.Debug, 
+		'Debug Mocha Tests',
+		TestRunProfileKind.Debug,
 		async (request, token) => executeTest(request, token, DEBUG_TEST_COMMAND),
 	);
 
@@ -199,7 +199,7 @@ export const addTestFile = (
     const root = getTestRoot(config, rootPath , fileName, testController);
     let parent = root.children.get(createItemId(fileName));
     if (!parent) {
-      
+
       parent = testController.createTestItem(createItemId(fileName), basename(fileName), uri);
       parent.tags = [new TestTag(TEST_SUITE)];
       root.children.add(parent);
@@ -266,10 +266,10 @@ export const registerTestResults = (
     };
 
     if (runMode === TestRunMode.suite) {
-      item.parent?.children.forEach(addRelatedItems);      
+      item.parent?.children.forEach(addRelatedItems);
     }
     if (runMode === TestRunMode.file) {
-      item.children.forEach(addRelatedItems);   
+      item.children.forEach(addRelatedItems);
     }
     return results;
   };
@@ -284,10 +284,10 @@ export const registerTestResults = (
 
       testCases.forEach((test: any) => {
         const {'@_name': name, '@_time': time, m,'@_classname': className, failure: failureMessage} = test;
-        
+
         failureList.push(failureMessage);
         totalTime += parseFloat(time);
-       
+
         const itemsToUpdate = findMatchingItems(className, name, runMode);
 
         itemsToUpdate.forEach(caseItem => {;
