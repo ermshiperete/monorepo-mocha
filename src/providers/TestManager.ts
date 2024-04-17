@@ -248,8 +248,8 @@ export const registerTestResults = (
     const matches = failureMessage.match(/expected (.*) to .*? (.*)/);
     if (matches) {
       return {
-        expectedOutput: matches[1],
-        actualOutput: matches[2],
+        actualOutput: matches[1],
+        expectedOutput: matches[2],
       };
     }
     return undefined;
