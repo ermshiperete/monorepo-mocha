@@ -136,7 +136,7 @@
 		"vscode-test-adapter-api": "^1.9.0",
 		"mocha": "^11.7.5",
 		"uuid": "^8.3.2",
-		"fast-xml-parser": "^4.0.6"
+		"fast-xml-parser": "^5.3.4"
 	},
 	"devDependencies": {
 		"@types/vscode": "^1.64.0",
@@ -148,7 +148,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.12.1",
 		"@typescript-eslint/parser": "^5.12.1",
 		"eslint": "^8.9.0",
-		"glob": "^7.2.0",
+		"glob": "^9.0.0",
 		"typescript": "^4.5.5",
 		"@vscode/test-electron": "^2.1.2"
 	}
